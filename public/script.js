@@ -141,6 +141,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ phone_number: phoneNumber }),
             });
 
+            if (!response.ok) {
+                const text = await response.text();
+                console.error("Server returned error:", response.status, text);
+                try {
+                    const data = JSON.parse(text);
+                    showError(data.error || `Server error (${response.status})`);
+                } catch (e) {
+                    showError(`Network error (${response.status}). Please try again later.`);
+                }
+                return;
+            }
+
             const data = await response.json();
 
             if (!data.success) {
